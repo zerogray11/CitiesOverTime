@@ -14,6 +14,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import SignUpPage from "./Pages/SignUpPage";
 import Roadmap from "./components/Roadmap";
 import SocialMediaPage from "./Pages/SocialMediaPage";
+import UserProfile from "./components/UserProfile";
 
 const App = () => {
   return (
@@ -36,6 +37,8 @@ const App = () => {
           <Route path="/sign-in-page" element={<SignInPage />} />
           <Route path="/sign-up-page" element={<SignUpPage />} />
           <Route path="/social-media-page" element={<SocialMediaPage />} />
+          <Route path="/user-profile" element={<UserProfile />} />
+          
         </Routes>
         <Footer />
       </div>
