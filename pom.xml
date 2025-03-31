@@ -157,7 +157,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>com.citiesovertime.citiesovertime11</mainClass>
+					<mainClass>com.citiesovertime.citiesovertime11.Citiesovertime11Application</mainClass>
 					<executable>true</executable>
 					<!-- REMOVED classifier which was causing issues -->
 				</configuration>
