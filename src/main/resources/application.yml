@@ -2,22 +2,26 @@ spring:
   application:
     name: CitiesOverTimeJava
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/citiesovertime}?sslmode=require
-    username: ${DATABASE_USERNAME:postgres}
-    password: ${DATABASE_PASSWORD:morocaan}
+    url: jdbc:postgresql://cc0gj7hsrh0ht8.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d37sma5esea6bg?sslmode=require&ssl=true&sslfactory=org.postgresql.ssl.DefaultSSLFactory
+    username: ue42il832tsg5s
+    password: p49013d72fb466439f98ef843750216315ae0f237de27f27ef911560a3be23477
     hikari:
-      maximum-pool-size: 3  # Reduced for Heroku free tier
-      connection-timeout: 10000
-      leak-detection-threshold: 5000
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
-        connection.provider_disables_autocommit: true  # Added for transaction stability
+      maximum-pool-size: 5  # Matches your connection limit
+      minimum-idle: 1
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
+      pool-name: CitiesOverTimePool
+
+    jpa:
+      properties:
+        hibernate:
+          connection.provider_disables_autocommit: true
+          jdbc.time_zone: UTC
+          jdbc.batch_size: 20
+          order_inserts: true
+          order_updates: true
   main:
     lazy-initialization: true
     banner-mode: off  # Cleaner startup logs

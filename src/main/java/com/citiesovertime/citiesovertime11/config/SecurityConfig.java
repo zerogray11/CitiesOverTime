@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,8 +20,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import jakarta.persistence.EntityManagerFactory;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -32,28 +34,75 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomUserDetailsService customUserDetailsService;
+    private final AuthenticationConfiguration authenticationConfiguration;
 
     public SecurityConfig(@Lazy JwtAuthenticationFilter jwtAuthenticationFilter,
-                          CustomUserDetailsService customUserDetailsService) {
+                          CustomUserDetailsService customUserDetailsService,
+                          AuthenticationConfiguration authenticationConfiguration) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.customUserDetailsService = customUserDetailsService;
+        this.authenticationConfiguration = authenticationConfiguration;
         logger.info("SecurityConfig loaded!");
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http
+                .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
-                        .requestMatchers("/api/users/login").permitAll()
-                        .requestMatchers("/api/users/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/comments/article/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/favorites/isFavorited").authenticated()
-                        .anyRequest().permitAll()
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        .sessionConcurrency(concurrency -> concurrency
+                                .maximumSessions(1)
+                        )
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .authorizeHttpRequests(auth -> auth
+                        // Public endpoints
+                        .requestMatchers(
+                                "/",
+                                "/health",
+                                "/error",
+                                "/favicon.ico",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**"
+                        ).permitAll()
+
+                        // Auth endpoints
+                        .requestMatchers(
+                                "/api/users/login",
+                                "/api/users/register",
+                                "/api/users/refresh-token"
+                        ).permitAll()
+
+                        // Article endpoints
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/articles/**",
+                                "/api/comments/article/**"
+                        ).permitAll()
+
+                        // Protected endpoints
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/comments/article/**",
+                                "/api/favorites/**"
+                        ).authenticated()
+
+                        // Admin endpoints
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendError(401, "Unauthorized");
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.sendError(403, "Forbidden");
+                        })
+                );
 
         return http.build();
     }
@@ -62,12 +111,11 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
-                "https://citiesovertime.vercel.app",  // Production frontend
-                "https://localhost:5173"              // Local development
+                "https://citiesovertime.vercel.app",
+                "https://localhost:5173"
         ));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowCredentials(true);
-        configuration.setAllowedHeaders(Arrays.asList(
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedHeaders(List.of(
                 "Authorization",
                 "Content-Type",
                 "X-Requested-With",
@@ -76,12 +124,13 @@ public class SecurityConfig {
                 "Access-Control-Request-Method",
                 "Access-Control-Request-Headers"
         ));
-        configuration.setExposedHeaders(Arrays.asList(
+        configuration.setExposedHeaders(List.of(
                 "Authorization",
                 "Access-Control-Allow-Origin",
                 "Access-Control-Allow-Credentials"
         ));
-        configuration.setMaxAge(3600L);  // 1 hour cache
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -90,16 +139,20 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(12);
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder
-                .userDetailsService(customUserDetailsService)
-                .passwordEncoder(passwordEncoder());
-        return authenticationManagerBuilder.build();
+    public AuthenticationManager authenticationManager() throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(emf);
+        transactionManager.setNestedTransactionAllowed(true);
+        transactionManager.setRollbackOnCommitFailure(true);
+        return transactionManager;
     }
 }
