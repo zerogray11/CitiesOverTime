@@ -51,7 +51,7 @@ export const navigation = [
   {
     id: "1",
     title: "Articles",
-    url: "#Articles",
+    url: "/articles",
   },
 
   {
@@ -59,7 +59,7 @@ export const navigation = [
     title: "Conversations",
     url: "/social-media-page",
   },
-  {
+  /*{
     id: "4",
     title: "New account",
     url: "/sign-up-page",
@@ -70,7 +70,7 @@ export const navigation = [
     title: "Sign in",
     url: "/sign-in-page",
     onlyMobile: true,
-  },
+  },*/
 ];
 
 export const heroIcons = [homeSmile, file02, searchMd, plusSquare];

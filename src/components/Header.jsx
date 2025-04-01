@@ -1,17 +1,18 @@
 import { useLocation } from "react-router-dom";
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
 import { Link } from "react-router-dom";
-import { brainwave } from "../assets";
 import { navigation } from "../constants";
 import Button from "./Button";
 import MenuSvg from "../assets/svg/MenuSvg";
-import { useState, useContext } from "react"; 
-import FuturisticSearchBar from "./FuturisticSearchBar"; 
-import { ThemeContext } from "../components/ThemeContext"; 
-import { User } from "lucide-react"; 
+import { useState, useContext } from "react";
+import FuturisticSearchBar from "./FuturisticSearchBar";
+import { ThemeContext } from "../components/ThemeContext";
+import { User, Settings, Shield } from "lucide-react"; // Added icons for admin and user
+import { AuthContext } from "../context/AuthContext";
 
 const Header = () => {
-  const { theme, toggleTheme } = useContext(ThemeContext); 
+  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { user, role, loading } = useContext(AuthContext); // Access user and role from AuthContext
   const pathname = useLocation();
   const [openNavigation, setOpenNavigation] = useState(false);
 
@@ -32,6 +33,10 @@ const Header = () => {
     setOpenNavigation(false);
   };
 
+  if (loading) {
+    return null; // or a loading spinner
+  }
+
   return (
     <div
       className={`fixed top-0 left-0 w-full z-50 border-b border-n-6 lg:bg-n-8/90 lg:backdrop-blur-sm ${
@@ -43,8 +48,8 @@ const Header = () => {
         <Link className="flex items-center w-auto xl:mr-8" to="/">
           <img
             className="rounded-full"
-            src="../public/citiesovertime.jpeg"
-            width={40}
+            src="/Users/macbookpro/COTAPP/CitiesOverTime/src/public/citiesvertime.png"
+             width={40}
             height={40}
             alt="CitiesOverTime"
           />
@@ -76,13 +81,33 @@ const Header = () => {
           </div>
         </nav>
 
-        {/* User Profile Icon (Desktop) */}
-        <Link
-          to="/user-profile"
-          className="hidden lg:flex items-center justify-center w-10 h-10 rounded-full bg-n-7 hover:bg-n-6 transition-colors ml-8"
-        >
-          <User size={20} className="text-n-1" />
-        </Link>
+        {/* User Profile or Admin Dashboard Icon (Desktop) */}
+        {user ? (
+          <Link
+            to={role === "admin" ? "/admin-dashboard" : "/user-profile"}
+            onClick={(e) => e.stopPropagation()} // Prevent event propagation
+            className="hidden lg:flex items-center justify-center w-10 h-10 rounded-full bg-n-7 hover:bg-n-6 transition-colors ml-8"
+          >
+            {role === "admin" ? (
+              <Shield size={20} className="text-n-1" /> // Admin icon
+            ) : (
+              <User size={20} className="text-n-1" /> // User icon
+            )}
+          </Link>
+        ) : (
+          <>
+            {/* Sign Up and Sign In Buttons (Desktop) */}
+            <a
+              href="/sign-up-page"
+              className="hidden lg:block mr-4 text-n-1/50 transition-colors hover:text-n-1"
+            >
+              New account
+            </a>
+            <Button className="hidden lg:flex" href="/sign-in-page">
+              Sign in
+            </Button>
+          </>
+        )}
 
         {/* Theme Toggle Button (Desktop) */}
         <button
@@ -91,17 +116,6 @@ const Header = () => {
         >
           {theme === "dark" ? "🌙" : "☀️"}
         </button>
-
-        {/* Sign Up and Sign In Buttons (Desktop) */}
-        <a
-          href="/sign-up-page"
-          className="button hidden lg:block mr-8 text-n-1/50 transition-colors hover:text-n-1"
-        >
-          New account
-        </a>
-        <Button className="hidden lg:flex" href="/sign-in-page">
-          Sign in
-        </Button>
 
         {/* Hamburger Menu Button (Mobile) */}
         <Button
@@ -134,13 +148,33 @@ const Header = () => {
               </a>
             ))}
 
-            {/* User Profile Icon (Mobile) */}
-            <Link
-              to="/user-profile"
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-n-7 hover:bg-n-6 transition-colors mt-8"
-            >
-              <User size={20} className="text-n-1" />
-            </Link>
+            {/* User Profile or Admin Dashboard Icon (Mobile) */}
+            {user ? (
+              <Link
+                to={role === "admin" ? "/admin-dashboard" : "/user-profile"}
+                onClick={(e) => e.stopPropagation()} // Prevent event propagation
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-n-7 hover:bg-n-6 transition-colors mt-8"
+              >
+                {role === "admin" ? (
+                  <Shield size={20} className="text-n-1" /> // Admin icon
+                ) : (
+                  <User size={20} className="text-n-1" /> // User icon
+                )}
+              </Link>
+            ) : (
+              <>
+                {/* Sign Up and Sign In Buttons (Mobile) */}
+                <a
+                  href="/sign-up-page"
+                  className="block text-n-1/50 transition-colors hover:text-n-1 mt-8"
+                >
+                  New account
+                </a>
+                <Button className="mt-4" href="/sign-in-page">
+                  Sign in
+                </Button>
+              </>
+            )}
 
             {/* Theme Toggle Button (Mobile) */}
             <button

@@ -1,5 +1,5 @@
-import ArticlePage from "../components/Articlepage";
-
+import ArticlePage from "../components/ArticlePage";
+a
 const ArticlePageComponent = () => {
     return ( <div className="article-page">
         <ArticlePage />

@@ -157,7 +157,7 @@ export default function SignUp(props) {
     };
   
     try {
-      const response = await fetch('http://localhost:8080/api/users/register', {
+      const response = await fetch('https://citiesovertime11-4fc5e5e61457.herokuapp.com/api/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

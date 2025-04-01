@@ -74,7 +74,7 @@ import benefitIcon3 from "./benefits/icon-3.svg";
 import benefitIcon4 from "./benefits/icon-4.svg";
 import benefitImage2 from "./benefits/image-2.png";
 import LaFire from "./benefits/lafire.png";
-import Montreal from "./benefits/Montreal.jpg";
+import Montreal from "./benefits/montreal.jpg";
 import Florida from "./benefits/Florida.png";
 import Chicago from "./benefits/Chicago.jpg";
 import Austin from "./benefits/Austin.jpg";

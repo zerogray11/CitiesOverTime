@@ -1,10 +1,26 @@
 import * as React from 'react';
-import { Box, Button, Checkbox, CssBaseline, FormControlLabel, Divider, FormLabel, FormControl, Link, TextField, Typography, Stack, Card } from '@mui/material';
+import { useState, useContext } from 'react'; // Import useState and useContext
+import {
+  Box,
+  Button,
+  Checkbox,
+  CssBaseline,
+  FormControlLabel,
+  Divider,
+  FormLabel,
+  FormControl,
+  Link,
+  TextField,
+  Typography,
+  Stack,
+  Card,
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import ForgotPassword from './ForgotPassword';
 import { GoogleIcon, FacebookIcon } from './CustomIcons';
 import { ThemeContext } from '../components/ThemeContext'; // Import ThemeContext
-import {LightModeGradient } from "../assets";
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 
 const CardStyled = styled(Card)(({ theme }) => ({
   display: 'flex',
@@ -13,8 +29,8 @@ const CardStyled = styled(Card)(({ theme }) => ({
   width: '100%',
   padding: theme.spacing(4),
   gap: theme.spacing(2),
-  margin: '64px auto',  // Added margin for vertical centering
-  background: '#000000',  // Jet black background
+  margin: '64px auto', // Added margin for vertical centering
+  background: '#000000', // Jet black background
   borderRadius: '16px',
   border: '1px solid transparent',
   position: 'relative',
@@ -41,21 +57,21 @@ const CardStyled = styled(Card)(({ theme }) => ({
 }));
 
 const SignInContainer = styled(Stack)(({ theme }) => ({
-  minHeight: '100vh',  // Ensure the container takes at least the full height
+  minHeight: '100vh', // Ensure the container takes at least the full height
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  padding: theme.spacing(2),  // Adjust padding to provide some space around content
-  flexDirection: 'column',  // Stack the elements vertically
-  gap: theme.spacing(3),  // Add space between elements
+  padding: theme.spacing(2), // Adjust padding to provide some space around content
+  flexDirection: 'column', // Stack the elements vertically
+  gap: theme.spacing(3), // Add space between elements
   '& > *': {
     width: '100%',
-    maxWidth: '500px',  // Max width for the content inside
-    padding: theme.spacing(3),  // Adjust padding for the inner content (like the card)
+    maxWidth: '500px', // Max width for the content inside
+    padding: theme.spacing(3), // Adjust padding for the inner content (like the card)
   },
   [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(1),  // Less padding on smaller screens
-    gap: theme.spacing(2),      // Reduce space between elements on small screens
+    padding: theme.spacing(1), // Less padding on smaller screens
+    gap: theme.spacing(2), // Reduce space between elements on small screens
   },
 }));
 
@@ -65,42 +81,38 @@ const formControlStyle = {
     borderRadius: '12px',
     '& fieldset': {
       borderColor: 'rgba(124, 58, 237, 0.5)',
-      borderWidth: '2px'
+      borderWidth: '2px',
     },
     '&:hover fieldset': {
-      borderColor: 'rgba(124, 58, 237, 0.8)'
+      borderColor: 'rgba(124, 58, 237, 0.8)',
     },
     '&.Mui-focused fieldset': {
       borderColor: '#7c3aed',
-      boxShadow: '0 0 10px rgba(124, 58, 237, 0.3)'
-    }
+      boxShadow: '0 0 10px rgba(124, 58, 237, 0.3)',
+    },
   },
   '& .MuiOutlinedInput-input': {
-    color: '#fff'
-  }
+    color: '#fff',
+  },
 };
 
 export default function SignIn(props) {
   const { theme } = React.useContext(ThemeContext); // Access the current theme
+  const { login } = useContext(AuthContext); // Access the login function from AuthContext
+  const navigate = useNavigate(); // For redirection
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [open, setOpen] = React.useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false); // State for password visibility
+  const [error, setError] = useState(''); // State for login errors
 
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleSubmit = (event) => {
-    if (emailError || passwordError) {
-      event.preventDefault();
-      return;
-    }
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible); // Toggle password visibility
   };
 
   const validateInputs = () => {
@@ -130,6 +142,55 @@ export default function SignIn(props) {
     return isValid;
   };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+  
+    if (!validateInputs()) {
+      return;
+    }
+  
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+  
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login failed');
+      }
+  
+      const data = await response.json();
+      const { token, user } = data; // Extract user object
+      const role = user.role; // Extract role from user object
+  
+      // Debugging: Log the role to ensure it's correct
+      console.log('Role from backend:', role);
+  
+      // Save token, user, and role in localStorage
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user)); // Store the full user object
+      localStorage.setItem('role', role);
+  
+      // Update AuthContext
+      login(user, token, role);
+  
+      // Redirect based on role
+      if (role === 'user') {
+        navigate('/user-profile');
+      } else {
+        navigate('/admin-dashboard');
+      }
+    } catch (err) {
+      setError(err.message || 'Login failed. Please try again.');
+    }
+  };
   return (
     <>
       <SignInContainer
@@ -173,7 +234,7 @@ export default function SignIn(props) {
               display: 'flex',
               flexDirection: 'column',
               width: '100%',
-              gap: 2
+              gap: 2,
             }}
           >
             <FormControl>
@@ -200,7 +261,7 @@ export default function SignIn(props) {
                 helperText={passwordErrorMessage}
                 name="password"
                 placeholder="••••••"
-                type="password"
+                type={passwordVisible ? 'text' : 'password'} // Toggle password visibility
                 id="password"
                 autoComplete="current-password"
                 required
@@ -212,16 +273,37 @@ export default function SignIn(props) {
             <FormControlLabel
               control={
                 <Checkbox
+                  value="showPassword"
+                  onClick={togglePasswordVisibility} // Toggle password visibility
+                  sx={{
+                    color: '#7c3aed',
+                    '&.Mui-checked': { color: '#7c3aed' },
+                  }}
+                />
+              }
+              label="Show password"
+              sx={{ color: '#a5b4fc' }}
+            />
+
+            <FormControlLabel
+              control={
+                <Checkbox
                   value="remember"
                   sx={{
                     color: '#7c3aed',
-                    '&.Mui-checked': { color: '#7c3aed' }
+                    '&.Mui-checked': { color: '#7c3aed' },
                   }}
                 />
               }
               label="Remember me"
               sx={{ color: '#a5b4fc' }}
             />
+
+            {error && (
+              <Typography color="error" sx={{ textAlign: 'center' }}>
+                {error}
+              </Typography>
+            )}
 
             <Button
               type="submit"
@@ -256,21 +338,23 @@ export default function SignIn(props) {
                 textDecoration: 'none',
                 '&:hover': {
                   color: '#7c3aed',
-                  textShadow: '0 0 8px rgba(124, 58, 237, 0.5)'
-                }
+                  textShadow: '0 0 8px rgba(124, 58, 237, 0.5)',
+                },
               }}
             >
               Forgot your password?
             </Link>
           </Box>
 
-          <Divider sx={{
-            my: 3,
-            color: '#a5b4fc',
-            '&::before, &::after': {
-              borderColor: 'rgba(124, 58, 237, 0.3)'
-            }
-          }}>
+          <Divider
+            sx={{
+              my: 3,
+              color: '#a5b4fc',
+              '&::before, &::after': {
+                borderColor: 'rgba(124, 58, 237, 0.3)',
+              },
+            }}
+          >
             or
           </Divider>
 
@@ -324,8 +408,8 @@ export default function SignIn(props) {
                   textDecoration: 'none',
                   '&:hover': {
                     color: '#7c3aed',
-                    textShadow: '0 0 8px rgba(124, 58, 237, 0.5)'
-                  }
+                    textShadow: '0 0 8px rgba(124, 58, 237, 0.5)',
+                  },
                 }}
               >
                 Sign up
