@@ -2,12 +2,13 @@ spring:
   application:
     name: CitiesOverTimeJava
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/citiesovertime}  # Changed to match your actual DB name
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/citiesovertime}?sslmode=require
     username: ${DATABASE_USERNAME:postgres}
     password: ${DATABASE_PASSWORD:morocaan}
     hikari:
-      maximum-pool-size: 5
-      connection-timeout: 30000
+      maximum-pool-size: 3  # Reduced for Heroku free tier
+      connection-timeout: 10000
+      leak-detection-threshold: 5000
   jpa:
     hibernate:
       ddl-auto: update
@@ -29,6 +30,7 @@ server:
 logging:
   level:
     root: INFO
+
     org:
       springframework:
         web: DEBUG
