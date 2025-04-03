@@ -8,7 +8,7 @@ import Map, {
   Layer
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { PlusCircle, Layers, Save, Share2, PenTool, MapPin, Eye, EyeOff, Compass, Building, ChevronLeft } from 'lucide-react';
+import { PlusCircle, Layers, Save, Share2, PenTool, MapPin, Eye, EyeOff, Compass, Building } from 'lucide-react';
 import { ThemeContext } from '../components/ThemeContext';
 
 const neighborhoodColors = {
@@ -33,10 +33,10 @@ const neighborhoodColors = {
 };
 
 const mapStyles = [
-  { id: 'streets', name: 'Streets', light: 'mapbox://styles/mapbox/streets-v11', dark: 'mapbox://styles/mapbox/dark-v10' },
+  { id: 'streets', name: 'Streets', light: 'mapbox://styles/mapbox/streets-v11', dark: 'mapbox://styles/mapbox/streets-v11' },
   { id: 'satellite', name: 'Satellite', light: 'mapbox://styles/mapbox/satellite-streets-v11', dark: 'mapbox://styles/mapbox/satellite-streets-v11' },
   { id: 'light', name: 'Light', light: 'mapbox://styles/mapbox/light-v10', dark: 'mapbox://styles/mapbox/light-v10' },
-  { id: 'dark', name: 'Dark', light: 'mapbox://styles/mapbox/dark-v10', dark: 'mapbox://styles/mapbox/dark-v10' },
+  { id: 'dark', name: 'Dark', light: 'mapbox://styles/mapbox/light-v10', dark: 'mapbox://styles/mapbox/light-v10' },
   { id: 'outdoors', name: 'Outdoors', light: 'mapbox://styles/mapbox/outdoors-v11', dark: 'mapbox://styles/mapbox/outdoors-v11' }
 ];
 
@@ -110,9 +110,7 @@ const MapBox = () => {
   
   const generateId = () => Math.random().toString(36).substring(2, 9);
   
-  const getMapStyleUrl = (style) => {
-    return theme === 'dark' ? style.dark : style.light;
-  };
+  const getMapStyleUrl = (style) => style.light;
 
   const addNewPOI = (e) => {
     if (!drawingMode) return;
@@ -175,41 +173,38 @@ const MapBox = () => {
   };
 
   return (
-    <div className={`flex flex-col items-center min-h-screen ${theme === 'dark' ? 'bg-n-8' : 'bg-gradient-to-b from-n-1 to-n-2'} transition-colors duration-300 p-4`}>
-      {/* Header */}
+    <div className={`flex flex-col items-center min-h-screen ${theme === 'dark' ? 'bg-n-8' : 'bg-gradient-to-b from-n-1 to-n-2'} transition-colors duration-300 p-4 md:p-6`}>
+      {/* Header - Balanced and centered */}
       <div className="w-full max-w-6xl text-center mb-6">
         <div className="flex items-center justify-center mb-4">
-          <div className="hidden md:block h-[2px] w-16 bg-gradient-to-r from-purple-500 to-transparent"></div>
-          <div className="flex items-center mx-4">
+          <div className="hidden md:block h-[2px] flex-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent"></div>
+          <div className="flex items-center mx-4 px-4">
             <Building className={`w-6 h-6 mr-2 ${theme === 'dark' ? 'text-purple-400' : 'text-purple-700'}`} />
             <span className={`text-sm uppercase tracking-widest ${theme === 'dark' ? 'text-purple-400' : 'text-purple-700'}`}>
               Urban Explorer
             </span>
           </div>
-          <div className="hidden md:block h-[2px] w-16 bg-gradient-to-l from-purple-500 to-transparent"></div>
+          <div className="hidden md:block h-[2px] flex-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent"></div>
         </div>
         
-        <h1 className={`text-3xl font-bold mb-2 ${theme === 'dark' ? 'text-n-1' : 'text-n-9'}`}>
+        <h1 className={`text-3xl font-bold mb-3 ${theme === 'dark' ? 'text-n-1' : 'text-n-9'}`}>
           <span className="block mb-2 text-gradient bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500">
             Montreal Urban Canvas
           </span>
-          <span className="relative inline-block">
-            Design Your 
-            <span className="relative font-bold text-gradient bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-blue-500">
-              Future City
-            </span>
+          <span className="relative inline-block text-lg">
+            Design Your <span className="font-bold text-gradient bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-blue-500">Future City</span>
           </span>
         </h1>
         
-        <p className={`${theme === 'dark' ? 'text-n-4' : 'text-n-7'} mb-4 flex items-center justify-center`}>
+        <p className={`text-sm ${theme === 'dark' ? 'text-n-4' : 'text-n-7'} flex items-center justify-center`}>
           <Compass className={`w-4 h-4 mr-2 ${theme === 'dark' ? 'text-purple-400' : 'text-purple-700'}`} />
           For urban planners and city dreamers
           <MapPin className={`w-4 h-4 ml-2 ${theme === 'dark' ? 'text-purple-400' : 'text-purple-700'}`} />
         </p>
       </div>
       
-      {/* Map Container */}
-      <div className={`relative w-full max-w-6xl h-[75vh] rounded-2xl overflow-hidden shadow-xl ${theme === 'dark' ? 'border border-n-6' : 'border border-n-4/30'} mb-6`}>
+      {/* Map Container - Perfectly proportioned */}
+      <div className={`relative w-full max-w-6xl h-[70vh] rounded-2xl overflow-hidden shadow-xl ${theme === 'dark' ? 'border border-n-6' : 'border border-n-4/30'} mb-6`}>
         <Map
           ref={mapRef}
           mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
@@ -223,18 +218,18 @@ const MapBox = () => {
           <NavigationControl position="top-right" showCompass={false} />
           <GeolocateControl position="top-left" />
           
-          {/* Map Style Controls */}
-          <div className={`absolute top-4 left-4 z-20 ${theme === 'dark' ? 'bg-n-7/90' : 'bg-white/90'} p-1 rounded-lg shadow-md flex gap-1`}>
+          {/* Map Style Controls - Centered and elegant */}
+          <div className={`absolute top-4 left-1/2 transform -translate-x-1/2 z-20 ${theme === 'dark' ? 'bg-n-7/90' : 'bg-white/90'} px-3 py-1 rounded-full shadow-md flex gap-2 backdrop-blur-sm`}>
             {mapStyles.map((style) => (
               <button
                 key={style.id}
                 onClick={() => setCurrentMapStyle(style)}
                 className={`px-3 py-1 text-xs rounded-full transition-all ${
                   currentMapStyle.id === style.id 
-                    ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white' 
+                    ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-inner' 
                     : theme === 'dark' 
-                      ? 'bg-n-6 text-n-2 hover:bg-n-5' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'text-n-2 hover:bg-n-6/80' 
+                      : 'text-gray-700 hover:bg-gray-200/80'
                 }`}
               >
                 {style.name}
@@ -242,88 +237,65 @@ const MapBox = () => {
             ))}
           </div>
           
-          {/* Drawing Tools */}
-          <div className={`absolute bottom-4 left-4 z-20 ${theme === 'dark' ? 'bg-n-7/90' : 'bg-white/90'} p-2 rounded-lg shadow-md`}>
-            <div className="flex gap-2 items-center">
-              <button
-                onClick={() => setDrawingMode(!drawingMode)}
-                className={`p-2 rounded-full transition-all ${
-                  drawingMode 
-                    ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white' 
-                    : theme === 'dark' 
-                      ? 'bg-n-6 text-n-2 hover:bg-n-5' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-                title={drawingMode ? "Exit drawing mode" : "Enter drawing mode"}
-              >
-                <PenTool size={18} />
-              </button>
-              
-              <button
-                onClick={() => setShowLayers(!showLayers)}
-                className={`p-2 rounded-full transition-all ${
-                  showLayers 
-                    ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white' 
-                    : theme === 'dark' 
-                      ? 'bg-n-6 text-n-2 hover:bg-n-5' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-                title="Toggle layers"
-              >
-                <Layers size={18} />
-              </button>
-              
-              {drawingMode && (
-                <>
-                  <button
-                    onClick={saveDrawing}
-                    disabled={currentDrawing.length === 0}
-                    className={`p-2 rounded-full transition-all ${
-                      currentDrawing.length > 0 
-                        ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' 
-                        : theme === 'dark' 
-                          ? 'bg-n-6 text-n-4 cursor-not-allowed' 
-                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    }`}
-                    title="Save drawing"
-                  >
-                    <Save size={18} />
-                  </button>
-                  
-                  <div className={`text-xs font-medium ${theme === 'dark' ? 'text-purple-400' : 'text-purple-700'}`}>
-                    {drawingMode ? "Click to add points, double-click to add locations" : ""}
-                  </div>
-                </>
-              )}
-            </div>
+          {/* Drawing Tools - Symmetrical and balanced */}
+          <div className={`absolute bottom-6 left-6 z-20 ${theme === 'dark' ? 'bg-n-7/90' : 'bg-white/90'} p-2 rounded-xl shadow-md flex items-center gap-2`}>
+            <button
+              onClick={() => setDrawingMode(!drawingMode)}
+              className={`p-2 rounded-lg transition-all ${
+                drawingMode 
+                  ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-md' 
+                  : theme === 'dark' 
+                    ? 'bg-n-6 text-n-2 hover:bg-n-5' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <PenTool size={18} />
+            </button>
             
-            {/* Layers Panel */}
-            {showLayers && (
-              <div className={`mt-2 p-2 rounded-lg border shadow-lg ${theme === 'dark' ? 'bg-n-7 border-n-6' : 'bg-white border-gray-200'}`}>
-                <h4 className={`text-sm font-semibold mb-2 ${theme === 'dark' ? 'text-purple-400' : 'text-purple-700'}`}>Map Layers</h4>
-                
-                <div className="space-y-1">
-                  {Object.entries(activeLayers).map(([layer, active]) => (
-                    <div key={layer} className="flex items-center">
-                      <button
-                        onClick={() => setActiveLayers({
-                          ...activeLayers,
-                          [layer]: !active
-                        })}
-                        className={`flex items-center gap-2 w-full px-2 py-1 rounded ${theme === 'dark' ? 'hover:bg-n-6' : 'hover:bg-purple-50'}`}
-                      >
-                        {active ? <Eye size={16} className={theme === 'dark' ? 'text-purple-400' : 'text-purple-700'} /> : <EyeOff size={16} className={theme === 'dark' ? 'text-n-4' : 'text-gray-400'} />}
-                        <span className={`text-xs ${active ? (theme === 'dark' ? 'text-n-2 font-medium' : 'text-purple-700 font-medium') : (theme === 'dark' ? 'text-n-4' : 'text-gray-500')}`}>
-                          {layer.charAt(0).toUpperCase() + layer.slice(1).replace(/([A-Z])/g, ' $1')}
-                        </span>
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            <button
+              onClick={() => setShowLayers(!showLayers)}
+              className={`p-2 rounded-lg transition-all ${
+                showLayers 
+                  ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-md' 
+                  : theme === 'dark' 
+                    ? 'bg-n-6 text-n-2 hover:bg-n-5' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <Layers size={18} />
+            </button>
+            
+            {drawingMode && (
+              <button
+                onClick={saveDrawing}
+                disabled={currentDrawing.length === 0}
+                className={`p-2 rounded-lg transition-all ${
+                  currentDrawing.length > 0 
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md' 
+                    : theme === 'dark' 
+                      ? 'bg-n-6 text-n-4 cursor-not-allowed' 
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                <Save size={18} />
+              </button>
             )}
           </div>
           
+          {/* Stories Panel Toggle - Perfectly positioned */}
+          <button
+            onClick={() => setShowStoriesPanel(!showStoriesPanel)}
+            className={`absolute top-1/2 right-4 transform -translate-y-1/2 z-20 p-3 rounded-full shadow-md transition-all ${
+              showStoriesPanel 
+                ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white' 
+                : theme === 'dark' 
+                  ? 'bg-n-7/90 text-n-2 hover:bg-n-6/90' 
+                  : 'bg-white/90 text-purple-700 hover:bg-gray-100/90'
+            }`}
+          >
+            {showStoriesPanel ? '→' : '←'}
+          </button>
+
           {/* Neighborhood Markers */}
           {activeLayers.neighborhoods && neighborhoods.map((hood) => (
             <Marker
@@ -411,7 +383,7 @@ const MapBox = () => {
             </Source>
           ))}
           
-          {/* Popup */}
+          {/* Popup - Refined proportions */}
           {selectedNeighborhood && (
             <Popup
               latitude={selectedNeighborhood.latitude}
@@ -421,6 +393,7 @@ const MapBox = () => {
               closeOnClick={false}
               className="z-30"
               maxWidth="300px"
+              anchor="bottom"
             >
               <div className={`p-4 rounded-lg shadow-lg ${theme === 'dark' ? 'bg-gradient-to-br from-n-7 to-n-8 border border-n-6' : 'bg-gradient-to-br from-purple-50 to-blue-50 border border-n-4/30'}`}>
                 {selectedNeighborhood.userCreated ? (
@@ -462,34 +435,36 @@ const MapBox = () => {
           )}
         </Map>
         
-        {/* Urban Stories Panel */}
+        {/* Stories Panel - Refined proportions */}
         <div 
-          className={`absolute right-0 top-0 bottom-0 ${theme === 'dark' ? 'bg-n-8/95 border-l border-n-6' : 'bg-white/95 border-l border-n-4/30'} w-72 z-30 p-4 transition-transform duration-300 shadow-lg ${
+          className={`absolute right-0 top-0 bottom-0 ${theme === 'dark' ? 'bg-n-8/95 border-l border-n-6' : 'bg-white/95 border-l border-n-4/30'} w-80 z-30 p-5 transition-transform duration-300 shadow-2xl ${
             showStoriesPanel ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
-          <div className={`flex justify-between items-center mb-4 pb-2 ${theme === 'dark' ? 'border-b border-n-6' : 'border-b border-n-4/30'}`}>
-            <h3 className={`text-lg font-bold ${theme === 'dark' ? 'text-purple-400' : 'text-purple-700'}`}>Urban Stories</h3>
+          <div className={`flex justify-between items-center mb-5 pb-3 ${theme === 'dark' ? 'border-b border-n-6' : 'border-b border-n-4/30'}`}>
+            <h3 className={`text-xl font-bold ${theme === 'dark' ? 'text-purple-400' : 'text-purple-700'}`}>Urban Stories</h3>
             <button 
               onClick={() => setShowStoriesPanel(!showStoriesPanel)}
-              className={theme === 'dark' ? 'text-n-4 hover:text-purple-400' : 'text-gray-500 hover:text-purple-700'}
+              className={`p-1 rounded-full ${theme === 'dark' ? 'hover:bg-n-7' : 'hover:bg-gray-100'}`}
             >
               {showStoriesPanel ? '→' : '←'}
             </button>
           </div>
           
-          <div className="space-y-4 max-h-[90%] overflow-y-auto">
+          <div className="space-y-4 h-[calc(100%-4rem)] overflow-y-auto pr-2">
             {userStories.length === 0 ? (
-              <p className={`text-sm ${theme === 'dark' ? 'text-n-4' : 'text-gray-500'}`}>
-                Draw on the map to start creating urban stories!
-              </p>
+              <div className={`p-4 rounded-lg text-center ${theme === 'dark' ? 'bg-n-7' : 'bg-gray-50'}`}>
+                <p className={`${theme === 'dark' ? 'text-n-4' : 'text-gray-500'}`}>
+                  Draw on the map to start creating urban stories!
+                </p>
+              </div>
             ) : (
               userStories.map((story) => (
                 <div 
                   key={story.id} 
-                  className={`p-3 rounded-lg border shadow-sm ${theme === 'dark' ? 'bg-n-7 border-n-6' : 'bg-purple-50 border-purple-200'}`}
+                  className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-n-7' : 'bg-purple-50'} shadow-sm`}
                 >
-                  <h4 className={`font-medium ${theme === 'dark' ? 'text-purple-400' : 'text-purple-900'}`}>{story.name}</h4>
+                  <h4 className={`font-medium mb-2 ${theme === 'dark' ? 'text-purple-400' : 'text-purple-900'}`}>{story.name}</h4>
                   <textarea
                     placeholder="What's your vision for this area?"
                     value={story.description}
@@ -499,12 +474,14 @@ const MapBox = () => {
                       );
                       setUserStories(updatedStories);
                     }}
-                    className={`w-full mt-2 p-2 text-sm border rounded focus:outline-none focus:ring-1 ${theme === 'dark' ? 'bg-n-7 border-n-6 text-n-2 focus:ring-purple-400' : 'bg-white border-gray-300 focus:ring-purple-600'}`}
+                    className={`w-full p-3 rounded-lg border ${theme === 'dark' ? 'bg-n-8 border-n-6 text-n-2 focus:ring-purple-400' : 'bg-white border-gray-300 focus:ring-purple-600'} focus:outline-none focus:ring-1`}
                     rows={3}
                   />
-                  <div className="flex justify-between mt-2">
-                    <span className={`text-xs ${theme === 'dark' ? 'text-n-4' : 'text-gray-500'}`}>Created: {new Date().toLocaleDateString()}</span>
-                    <button className={`text-xs ${theme === 'dark' ? 'text-purple-400 hover:text-purple-300' : 'text-purple-700 hover:text-purple-900'} transition-colors`}>
+                  <div className="flex justify-between mt-3 items-center">
+                    <span className={`text-xs ${theme === 'dark' ? 'text-n-4' : 'text-gray-500'}`}>
+                      {new Date().toLocaleDateString()}
+                    </span>
+                    <button className={`px-3 py-1 rounded-full text-xs ${theme === 'dark' ? 'bg-n-6 text-purple-400 hover:bg-n-5' : 'bg-white text-purple-700 hover:bg-gray-100'} transition-colors`}>
                       <Share2 size={14} className="inline mr-1" /> Share
                     </button>
                   </div>
@@ -512,82 +489,56 @@ const MapBox = () => {
               ))
             )}
             
-            <button className={`w-full py-2 rounded-lg transition-colors shadow-md ${theme === 'dark' ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700' : 'bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600'} text-white`}>
-              <PlusCircle size={16} className="inline mr-1" /> Add New Vision
+            <button className={`w-full py-3 rounded-xl transition-colors shadow-md ${theme === 'dark' ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700' : 'bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600'} text-white flex items-center justify-center`}>
+              <PlusCircle size={18} className="mr-2" /> Add New Vision
             </button>
           </div>
         </div>
-        
-        {/* Toggle for Stories Panel */}
-        <button
-          onClick={() => setShowStoriesPanel(!showStoriesPanel)}
-          className={`absolute top-4 right-4 z-20 p-2 rounded-full shadow-md transition-all ${
-            showStoriesPanel 
-              ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white' 
-              : theme === 'dark' 
-                ? 'bg-n-7 text-n-2 hover:bg-n-6' 
-                : 'bg-white text-purple-700 hover:bg-gray-100'
-          }`}
-        >
-          {showStoriesPanel ? '→' : '←'}
-        </button>
       </div>
       
-      {/* Community Tools */}
-      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className={`p-4 rounded-xl shadow-sm ${theme === 'dark' ? 'bg-n-7 border border-n-6' : 'bg-white border border-n-4/30'}`}>
-          <h3 className={`text-lg font-bold mb-2 ${theme === 'dark' ? 'text-purple-400' : 'text-purple-700'}`}>Community Challenges</h3>
-          <p className={`text-sm mb-3 ${theme === 'dark' ? 'text-n-4' : 'text-gray-600'}`}>Join this week's urban design challenge:</p>
-          <div className={`p-3 rounded-lg border ${theme === 'dark' ? 'bg-n-6 border-n-5' : 'bg-purple-100 border-purple-200/50'}`}>
-            <h4 className={`font-medium ${theme === 'dark' ? 'text-purple-300' : 'text-purple-800'}`}>Green Transit Corridors</h4>
-            <p className={`text-xs mt-1 ${theme === 'dark' ? 'text-n-4' : 'text-gray-700'}`}>Design bike-friendly routes connecting neighborhoods</p>
-            <button className={`mt-2 px-3 py-1 text-xs rounded-full transition-colors ${theme === 'dark' ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700' : 'bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600'} text-white`}>
+      {/* Community Tools - Balanced grid */}
+      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className={`p-5 rounded-xl ${theme === 'dark' ? 'bg-n-7' : 'bg-white'} shadow-md`}>
+          <h3 className={`text-lg font-bold mb-3 ${theme === 'dark' ? 'text-purple-400' : 'text-purple-700'}`}>Community Challenges</h3>
+          <div className={`p-4 rounded-lg ${theme === 'dark' ? 'bg-n-6' : 'bg-purple-50'}`}>
+            <h4 className={`font-medium mb-1 ${theme === 'dark' ? 'text-purple-300' : 'text-purple-800'}`}>Green Transit Corridors</h4>
+            <p className={`text-sm mb-3 ${theme === 'dark' ? 'text-n-4' : 'text-gray-700'}`}>Design bike-friendly routes connecting neighborhoods</p>
+            <button className={`w-full py-2 rounded-lg ${theme === 'dark' ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700' : 'bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600'} text-white text-sm`}>
               Join Challenge
             </button>
           </div>
         </div>
         
-        <div className={`p-4 rounded-xl shadow-sm ${theme === 'dark' ? 'bg-n-7 border border-n-6' : 'bg-white border border-n-4/30'}`}>
-          <h3 className={`text-lg font-bold mb-2 ${theme === 'dark' ? 'text-purple-400' : 'text-purple-700'}`}>Trending Designs</h3>
-          <div className="space-y-2">
-            <div className={`flex items-center justify-between px-2 py-1 rounded ${theme === 'dark' ? 'hover:bg-n-6' : 'hover:bg-purple-50'} transition-colors`}>
-              <span className={`text-sm font-medium ${theme === 'dark' ? 'text-n-2' : 'text-gray-800'}`}>Urban Garden Network</span>
-              <span className={`text-xs ${theme === 'dark' ? 'text-purple-400' : 'text-purple-600'}`}>128 likes</span>
-            </div>
-            <div className={`flex items-center justify-between px-2 py-1 rounded ${theme === 'dark' ? 'hover:bg-n-6' : 'hover:bg-purple-50'} transition-colors`}>
-              <span className={`text-sm font-medium ${theme === 'dark' ? 'text-n-2' : 'text-gray-800'}`}>Pedestrian Friendly Market</span>
-              <span className={`text-xs ${theme === 'dark' ? 'text-purple-400' : 'text-purple-600'}`}>97 likes</span>
-            </div>
-            <div className={`flex items-center justify-between px-2 py-1 rounded ${theme === 'dark' ? 'hover:bg-n-6' : 'hover:bg-purple-50'} transition-colors`}>
-              <span className={`text-sm font-medium ${theme === 'dark' ? 'text-n-2' : 'text-gray-800'}`}>Riverside Amphitheater</span>
-              <span className={`text-xs ${theme === 'dark' ? 'text-purple-400' : 'text-purple-600'}`}>84 likes</span>
-            </div>
+        <div className={`p-5 rounded-xl ${theme === 'dark' ? 'bg-n-7' : 'bg-white'} shadow-md`}>
+          <h3 className={`text-lg font-bold mb-3 ${theme === 'dark' ? 'text-purple-400' : 'text-purple-700'}`}>Trending Designs</h3>
+          <div className="space-y-3">
+            {['Urban Garden Network', 'Pedestrian Friendly Market', 'Riverside Amphitheater'].map((item, index) => (
+              <div key={index} className={`p-3 rounded-lg ${theme === 'dark' ? 'hover:bg-n-6' : 'hover:bg-purple-50'} transition-colors flex justify-between items-center`}>
+                <span className={`font-medium ${theme === 'dark' ? 'text-n-2' : 'text-gray-800'}`}>{item}</span>
+                <span className={`text-xs px-2 py-1 rounded-full ${theme === 'dark' ? 'bg-n-5 text-purple-400' : 'bg-purple-100 text-purple-600'}`}>
+                  {[128, 97, 84][index]} likes
+                </span>
+              </div>
+            ))}
           </div>
         </div>
         
-        <div className={`p-4 rounded-xl shadow-sm ${theme === 'dark' ? 'bg-n-7 border border-n-6' : 'bg-white border border-n-4/30'}`}>
-          <h3 className={`text-lg font-bold mb-2 ${theme === 'dark' ? 'text-purple-400' : 'text-purple-700'}`}>Upcoming Events</h3>
-          <div className="space-y-3">
-            <div className={`px-2 py-1 rounded ${theme === 'dark' ? 'hover:bg-n-6' : 'hover:bg-purple-50'} transition-colors`}>
-              <h4 className={`text-sm font-medium ${theme === 'dark' ? 'text-n-2' : 'text-gray-800'}`}>Urban Planning Workshop</h4>
-              <p className={`text-xs ${theme === 'dark' ? 'text-n-4' : 'text-gray-600'}`}>Apr 15, 2025 • Downtown Community Center</p>
-            </div>
-            <div className={`px-2 py-1 rounded ${theme === 'dark' ? 'hover:bg-n-6' : 'hover:bg-purple-50'} transition-colors`}>
-              <h4 className={`text-sm font-medium ${theme === 'dark' ? 'text-n-2' : 'text-gray-800'}`}>Public Space Design Contest</h4>
-              <p className={`text-xs ${theme === 'dark' ? 'text-n-4' : 'text-gray-600'}`}>May 2, 2025 • Online</p>
-            </div>
+        <div className={`p-5 rounded-xl ${theme === 'dark' ? 'bg-n-7' : 'bg-white'} shadow-md`}>
+          <h3 className={`text-lg font-bold mb-3 ${theme === 'dark' ? 'text-purple-400' : 'text-purple-700'}`}>Upcoming Events</h3>
+          <div className="space-y-4">
+            {[
+              { title: 'Urban Planning Workshop', date: 'Apr 15, 2025', location: 'Downtown Community Center' },
+              { title: 'Public Space Design Contest', date: 'May 2, 2025', location: 'Online' }
+            ].map((event, index) => (
+              <div key={index} className={`p-3 rounded-lg ${theme === 'dark' ? 'hover:bg-n-6' : 'hover:bg-purple-50'} transition-colors`}>
+                <h4 className={`font-medium ${theme === 'dark' ? 'text-n-2' : 'text-gray-800'}`}>{event.title}</h4>
+                <p className={`text-sm ${theme === 'dark' ? 'text-n-4' : 'text-gray-600'}`}>
+                  {event.date} • {event.location}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
-
-      {/* Back button for mobile */}
-      <div className="lg:hidden fixed bottom-4 left-4">
-        <button
-          onClick={() => window.history.back()}
-          className={`p-3 rounded-full shadow-md border ${theme === 'dark' ? 'bg-n-7 border-n-6 text-n-2' : 'bg-white border-n-4/30 text-purple-700'}`}
-        >
-          <ChevronLeft size={20} />
-        </button>
       </div>
     </div>
   );
