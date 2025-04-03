@@ -3,38 +3,34 @@ import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
-import { debounce } from '@mui/material/utils'; // For debouncing
+import { debounce } from '@mui/material/utils';
 
+// Refined search container with subtle styling
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
-  borderRadius: '12px',
-  backgroundColor: alpha(theme.palette.common.white, 0.1),
+  borderRadius: '8px',
+  backgroundColor: alpha(theme.palette.common.white, 0.07),
   '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
+    backgroundColor: alpha(theme.palette.common.white, 0.09),
   },
   marginLeft: 0,
   width: '100%',
   maxWidth: '400px',
-  border: '1px solid transparent',
-  backgroundClip: 'padding-box',
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    top: -1,
-    left: -1,
-    right: -1,
-    bottom: -1,
-    borderRadius: '12px',
-    background: 'linear-gradient(45deg, #1e3a8a, #6d28d9, #1e3a8a, #4c1d95)',
-    zIndex: -1,
-    animation: 'borderAnimation 6s ease infinite',
-  },
+  transition: 'all 0.3s ease',
+  border: `1px solid ${alpha(theme.palette.common.white, 0.12)}`,
+  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(1),
     width: 'auto',
   },
+  '&:focus-within': {
+    backgroundColor: alpha(theme.palette.common.white, 0.1),
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+    border: `1px solid ${alpha(theme.palette.common.white, 0.2)}`,
+  }
 }));
 
+// Refined icon wrapper
 const SearchIconWrapper = styled('div')(({ theme }) => ({
   padding: theme.spacing(0, 2),
   height: '100%',
@@ -43,55 +39,99 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  color: '#a5b4fc',
+  color: alpha(theme.palette.common.white, 0.6),
 }));
 
+// Refined input styling
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: '#fff',
+  color: theme.palette.common.white,
   width: '100%',
+  fontWeight: 300,
+  letterSpacing: '0.3px',
   '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
+    padding: theme.spacing(1.2, 1, 1.2, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
+    transition: theme.transitions.create(['width', 'background-color']),
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+    fontSize: '0.95rem',
     [theme.breakpoints.up('sm')]: {
-      width: '12ch',
+      width: '16ch',
       '&:focus': {
-        width: '20ch',
+        width: '24ch',
       },
+    },
+    '&::placeholder': {
+      color: alpha(theme.palette.common.white, 0.4),
+      fontSize: '0.95rem',
+      fontWeight: 300,
     },
   },
 }));
 
+// Refined search results container
 const SearchResults = styled('div')(({ theme }) => ({
   position: 'absolute',
-  top: '100%',
+  top: 'calc(100% + 8px)',
   left: 0,
   right: 0,
-  backgroundColor: '#1e1e2f',
-  borderRadius: '8px',
-  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.3)',
+  backgroundColor: alpha('#121220', 0.97),
+  borderRadius: '6px',
+  boxShadow: '0 6px 16px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.1)',
   zIndex: 1000,
-  marginTop: theme.spacing(1),
-  maxHeight: '200px',
+  maxHeight: '280px',
   overflowY: 'auto',
-}));
-
-const SearchResultItem = styled(Link)(({ theme }) => ({
-  display: 'block',
-  padding: theme.spacing(1, 2),
-  color: '#fff',
-  textDecoration: 'none',
-  '&:hover': {
-    backgroundColor: '#2d2d48',
+  backdropFilter: 'blur(10px)',
+  border: `1px solid ${alpha(theme.palette.common.white, 0.08)}`,
+  '&::-webkit-scrollbar': {
+    width: '4px',
+  },
+  '&::-webkit-scrollbar-track': {
+    background: 'transparent',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    background: alpha(theme.palette.common.white, 0.2),
+    borderRadius: '4px',
   },
 }));
 
-export default function FuturisticSearchBar() {
+// Refined search result item
+const SearchResultItem = styled(Link)(({ theme }) => ({
+  display: 'block',
+  padding: theme.spacing(1.2, 2),
+  color: alpha(theme.palette.common.white, 0.85),
+  textDecoration: 'none',
+  fontSize: '0.9rem',
+  borderBottom: `1px solid ${alpha(theme.palette.common.white, 0.05)}`,
+  transition: 'all 0.2s ease',
+  fontWeight: 300,
+  letterSpacing: '0.2px',
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.common.white, 0.05),
+  },
+  '&:last-child': {
+    borderBottom: 'none',
+  }
+}));
+
+// Message component for states (loading, error, no results)
+const SearchMessage = styled('div')(({ theme, type }) => ({
+  padding: theme.spacing(1.5, 2),
+  color: type === 'error' 
+    ? alpha('#ff6b6b', 0.9) 
+    : alpha(theme.palette.common.white, 0.6),
+  fontSize: '0.9rem',
+  fontWeight: 300,
+  letterSpacing: '0.2px',
+  textAlign: 'center',
+}));
+
+export default function SophisticatedSearchBar() {
   const [searchQuery, setSearchQuery] = React.useState('');
-  const [allArticles, setAllArticles] = React.useState([]); // Store all fetched articles
-  const [filteredResults, setFilteredResults] = React.useState([]); // Store filtered results
-  const [isLoading, setIsLoading] = React.useState(false); // Loading state
-  const [error, setError] = React.useState(null); // Error state
+  const [allArticles, setAllArticles] = React.useState([]);
+  const [filteredResults, setFilteredResults] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [error, setError] = React.useState(null);
+  const [isFocused, setIsFocused] = React.useState(false);
 
   // Fetch articles from the backend
   React.useEffect(() => {
@@ -104,7 +144,7 @@ export default function FuturisticSearchBar() {
           throw new Error('Failed to fetch articles');
         }
         const data = await response.json();
-        setAllArticles(data); // Store all articles
+        setAllArticles(data);
       } catch (err) {
         setError(err.message);
         console.error(err);
@@ -120,15 +160,15 @@ export default function FuturisticSearchBar() {
     () =>
       debounce((query) => {
         if (query.trim() === '') {
-          setFilteredResults([]); // Clear results if query is empty
+          setFilteredResults([]);
           return;
         }
 
         const filtered = allArticles.filter((article) =>
           article.title.toLowerCase().includes(query.toLowerCase())
         );
-        setFilteredResults(filtered); // Set filtered results
-      }, 300), // 300ms debounce delay
+        setFilteredResults(filtered);
+      }, 250),
     [allArticles]
   );
 
@@ -139,25 +179,41 @@ export default function FuturisticSearchBar() {
     handleSearch(query);
   };
 
+  const handleInputFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleInputBlur = () => {
+    // Delay blur slightly to allow clicking on results
+    setTimeout(() => {
+      setIsFocused(false);
+    }, 150);
+  };
+
+  // Show results only when focused or has query
+  const showResults = isFocused && searchQuery.trim() !== '';
+
   return (
-    <Search>
+    <Search sx={{ boxShadow: isFocused ? '0 4px 12px rgba(0, 0, 0, 0.08)' : '0 2px 8px rgba(0, 0, 0, 0.05)' }}>
       <SearchIconWrapper>
-        <SearchIcon />
+        <SearchIcon fontSize="small" />
       </SearchIconWrapper>
       <StyledInputBase
-        placeholder="Search articles…"
+        placeholder="Search..."
         inputProps={{ 'aria-label': 'search' }}
         value={searchQuery}
         onChange={handleInputChange}
+        onFocus={handleInputFocus}
+        onBlur={handleInputBlur}
       />
 
       {/* Display search results */}
-      {searchQuery && (
+      {showResults && (
         <SearchResults>
           {isLoading ? (
-            <div style={{ padding: '8px 16px', color: '#fff' }}>Loading...</div>
+            <SearchMessage>Searching...</SearchMessage>
           ) : error ? (
-            <div style={{ padding: '8px 16px', color: '#ff6b6b' }}>{error}</div>
+            <SearchMessage type="error">{error}</SearchMessage>
           ) : filteredResults.length > 0 ? (
             filteredResults.map((article) => (
               <SearchResultItem
@@ -169,9 +225,7 @@ export default function FuturisticSearchBar() {
               </SearchResultItem>
             ))
           ) : (
-            <div style={{ padding: '8px 16px', color: '#fff' }}>
-              No results found
-            </div>
+            <SearchMessage>No matching results</SearchMessage>
           )}
         </SearchResults>
       )}

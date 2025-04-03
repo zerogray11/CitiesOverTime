@@ -29,12 +29,14 @@ const Benefits = () => {
 
   return (
     <Section id="features">
-      <div className="container relative z-2">
+      <div className="container relative z-2 px-4 mx-auto max-w-6xl">
         <Heading />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-10">
+        
+        {/* Improved grid with better proportions */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
           {articles.map((article) => (
             <div
-              className="relative group overflow-hidden rounded-lg transition-all duration-300 cursor-pointer"
+              className="relative group overflow-hidden rounded-lg transition-all duration-300 cursor-pointer shadow-md"
               key={article.id}
               onClick={() => navigate(`/article/${article.id}`)}
               onMouseEnter={() => setHoveredArticle(article.id)}
@@ -66,11 +68,11 @@ const Benefits = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-700/20 to-purple-700/20"></div>
               </div>
 
-              {/* Content Container */}
-              <div className="relative z-10 flex flex-col min-h-[22rem] p-6">
+              {/* Content Container - Using fixed height for better proportions */}
+              <div className="relative z-10 flex flex-col h-64 p-5">
                 {/* Location Indicator - Top Right */}
                 <div className="self-end flex items-center mb-2">
-                  <MapPin size={16} className="text-indigo-300 mr-1" />
+                  <MapPin size={14} className="text-indigo-300 mr-1" />
                   <span className="text-xs text-indigo-300 font-mono uppercase tracking-wider">
                     {article.location || 'Urban Studies'}
                   </span>
@@ -78,34 +80,34 @@ const Benefits = () => {
 
                 {/* Title with Growing Line Underneath */}
                 <div className="mt-auto">
-                  <h3 className="text-xl md:text-2xl font-bold text-white mb-3 group-hover:text-indigo-300 transition-colors duration-300">
+                  <h3 className="text-lg md:text-xl font-bold text-white mb-2 group-hover:text-indigo-300 transition-colors duration-300 line-clamp-2">
                     {article.title}
                   </h3>
-                  <div className="h-0.5 w-16 bg-purple-500 group-hover:w-full transition-all duration-500 mb-4"></div>
+                  <div className="h-0.5 w-12 bg-purple-500 group-hover:w-full transition-all duration-500 mb-3"></div>
                   
                   {/* Excerpt - Appears on Hover */}
-                  <div className="overflow-hidden h-0 group-hover:h-16 transition-all duration-500">
-                    <p className="text-sm text-indigo-100 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200">
-                      {article.content.substring(0, 100)}...
+                  <div className="overflow-hidden h-0 group-hover:h-12 transition-all duration-500">
+                    <p className="text-xs text-indigo-100 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200 line-clamp-2">
+                      {article.content?.substring(0, 80)}...
                     </p>
                   </div>
                   
                   {/* Read More Row */}
-                  <div className="flex items-center justify-between mt-4">
+                  <div className="flex items-center justify-between mt-3">
                     <div className="flex items-center">
                       <span className="text-xs font-bold text-indigo-300 uppercase tracking-wider mr-2">Explore</span>
-                      <ArrowUpRight size={16} className="text-indigo-300 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                      <ArrowUpRight size={14} className="text-indigo-300 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
                     </div>
                     
-                    <div className="h-8 w-8 rounded-full bg-indigo-700/50 flex items-center justify-center transform translate-x-2 group-hover:translate-x-0 transition-transform duration-300">
-                      <ChevronRight size={16} className="text-white" />
+                    <div className="h-6 w-6 rounded-full bg-indigo-700/50 flex items-center justify-center transform translate-x-2 group-hover:translate-x-0 transition-transform duration-300">
+                      <ChevronRight size={14} className="text-white" />
                     </div>
                   </div>
                 </div>
               </div>
               
               {/* Decorative Element - Bottom Left Corner */}
-              <div className="absolute bottom-0 left-0 w-12 h-12 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              <div className="absolute bottom-0 left-0 w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                 <svg viewBox="0 0 100 100" className="w-full h-full">
                   <circle cx="0" cy="100" r="40" fill="rgba(79, 70, 229, 0.2)" />
                 </svg>
