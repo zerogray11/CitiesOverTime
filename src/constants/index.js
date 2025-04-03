@@ -59,18 +59,8 @@ export const navigation = [
     title: "Conversations",
     url: "/social-media-page",
   },
-  {
-    id: "4",
-    title: "New account",
-    url: "/sign-up-page",
-    onlyMobile: true,
-  },
-  {
-    id: "5",
-    title: "Sign in",
-    url: "/sign-in-page",
-    onlyMobile: true,
-  },
+ 
+ 
 ];
 
 export const heroIcons = [homeSmile, file02, searchMd, plusSquare];
