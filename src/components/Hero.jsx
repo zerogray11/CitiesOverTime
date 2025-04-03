@@ -14,66 +14,62 @@ import { Link } from "react-router-dom";
 import { Map, Building, Compass } from "lucide-react";
 
 const DarkModeBackground = () => (
-  <div className="absolute inset-0 w-full h-full overflow-hidden z-0">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1800" className="w-full h-full absolute top-0 left-0 object-cover min-h-screen">
-      <defs>
-        <linearGradient id="darkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#1a1a2e" />
-          <stop offset="50%" stopColor="#16213e" />
-          <stop offset="100%" stopColor="#212f45" />
-        </linearGradient>
-        <radialGradient id="darkAccent" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-          <stop offset="0%" stopColor="#4a3f75" stopOpacity="0.8" />
-          <stop offset="100%" stopColor="#2a2a4a" stopOpacity="0" />
-        </radialGradient>
-        <filter id="darkGlow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="20" result="blur" />
-          <feComposite in="SourceGraphic" in2="blur" operator="over" />
-        </filter>
-      </defs>
-      
-      <rect width="100%" height="100%" fill="url(#darkGradient)" />
-      <path d="M1440,400 C1200,450 900,300 600,450 C300,600 0,500 0,400 L0,0 L1440,0 Z" 
-        fill="url(#darkAccent)" opacity="0.3" />
-      <circle cx="700" cy="300" r="300" fill="#4a3f75" opacity="0.2" filter="url(#darkGlow)" />
-      <circle cx="1100" cy="200" r="200" fill="#3a506b" opacity="0.15" filter="url(#darkGlow)" />
-      <path d="M0,800 C300,750 600,850 900,750 C1200,650 1440,750 1440,800 L1440,1800 L0,1800 Z"
-        fill="#2a2a4a" opacity="0.2" />
-    </svg>
-  </div>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1800" className="w-full h-full">
+    <defs>
+      <linearGradient id="darkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#1a1a2e" />
+        <stop offset="50%" stopColor="#16213e" />
+        <stop offset="100%" stopColor="#212f45" />
+      </linearGradient>
+      <radialGradient id="darkAccent" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+        <stop offset="0%" stopColor="#4a3f75" stopOpacity="0.8" />
+        <stop offset="100%" stopColor="#2a2a4a" stopOpacity="0" />
+      </radialGradient>
+      <filter id="darkGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="20" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+    </defs>
+    
+    <rect width="100%" height="100%" fill="url(#darkGradient)" />
+    <path d="M1440,400 C1200,450 900,300 600,450 C300,600 0,500 0,400 L0,0 L1440,0 Z" 
+      fill="url(#darkAccent)" opacity="0.3" />
+    <circle cx="700" cy="300" r="300" fill="#4a3f75" opacity="0.2" filter="url(#darkGlow)" />
+    <circle cx="1100" cy="200" r="200" fill="#3a506b" opacity="0.15" filter="url(#darkGlow)" />
+    <path d="M0,800 C300,750 600,850 900,750 C1200,650 1440,750 1440,800 L1440,1800 L0,1800 Z"
+      fill="#2a2a4a" opacity="0.2" />
+  </svg>
 );
 
 const LightModeBackground = () => (
-  <div className="absolute inset-0 w-full h-full overflow-hidden z-0">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1800" className="w-full h-full absolute top-0 left-0 object-cover min-h-screen">
-      <defs>
-        <linearGradient id="lightGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#e8ebff" /> {/* Soft metallic blue */}
-          <stop offset="50%" stopColor="#e0e3ff" /> {/* Slightly purple tint */}
-          <stop offset="100%" stopColor="#d5d9ff" /> {/* Deeper metallic */}
-        </linearGradient>
-        <radialGradient id="lightAccent" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-          <stop offset="0%" stopColor="#9d97d8" stopOpacity="0.3" /> {/* Metallic purple */}
-          <stop offset="100%" stopColor="#d5d9ff" stopOpacity="0" />
-        </radialGradient>
-        <filter id="lightGlow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="15" result="blur" />
-          <feComposite in="SourceGraphic" in2="blur" operator="over" />
-        </filter>
-        <filter id="textEnhance" x="-20%" y="-20%" width="140%" height="140%">
-          <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" />
-        </filter>
-      </defs>
-      
-      <rect width="100%" height="100%" fill="url(#lightGradient)" filter="url(#textEnhance)" />
-      <path d="M1440,400 C1200,450 900,300 600,450 C300,600 0,500 0,400 L0,0 L1440,0 Z" 
-        fill="url(#lightAccent)" opacity="0.25" />
-      <circle cx="700" cy="300" r="300" fill="#b3aae8" opacity="0.15" filter="url(#lightGlow)" />
-      <circle cx="1100" cy="200" r="200" fill="#a2aae5" opacity="0.15" filter="url(#lightGlow)" />
-      <path d="M0,800 C300,750 600,850 900,750 C1200,650 1440,750 1440,800 L1440,1800 L0,1800 Z"
-        fill="#ccd0ff" opacity="0.15" />
-    </svg>
-  </div>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 1800" className="w-full h-full">
+    <defs>
+      <linearGradient id="lightGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#e8ebff" /> {/* Soft metallic blue */}
+        <stop offset="50%" stopColor="#e0e3ff" /> {/* Slightly purple tint */}
+        <stop offset="100%" stopColor="#d5d9ff" /> {/* Deeper metallic */}
+      </linearGradient>
+      <radialGradient id="lightAccent" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+        <stop offset="0%" stopColor="#9d97d8" stopOpacity="0.3" /> {/* Metallic purple */}
+        <stop offset="100%" stopColor="#d5d9ff" stopOpacity="0" />
+      </radialGradient>
+      <filter id="lightGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="15" result="blur" />
+        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+      </filter>
+      <filter id="textEnhance" x="-20%" y="-20%" width="140%" height="140%">
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" />
+      </filter>
+    </defs>
+    
+    <rect width="100%" height="100%" fill="url(#lightGradient)" filter="url(#textEnhance)" />
+    <path d="M1440,400 C1200,450 900,300 600,450 C300,600 0,500 0,400 L0,0 L1440,0 Z" 
+      fill="url(#lightAccent)" opacity="0.25" />
+    <circle cx="700" cy="300" r="300" fill="#b3aae8" opacity="0.15" filter="url(#lightGlow)" />
+    <circle cx="1100" cy="200" r="200" fill="#a2aae5" opacity="0.15" filter="url(#lightGlow)" />
+    <path d="M0,800 C300,750 600,850 900,750 C1200,650 1440,750 1440,800 L1440,1800 L0,1800 Z"
+      fill="#ccd0ff" opacity="0.15" />
+  </svg>
 );
 
 const Hero = () => {
@@ -82,16 +78,13 @@ const Hero = () => {
   
   return (
     <Section
-      className="pt-[12rem] -mt-[5.25rem] min-h-screen relative"
+      className="pt-[12rem] -mt-[5.25rem]"
       crosses
       crossesOffset="lg:translate-y-[5.25rem]"
       customPaddings
       id="hero"
     >
-      {/* Full-screen background that stays fixed regardless of content or screen size */}
-      {theme === "dark" ? <DarkModeBackground /> : <LightModeBackground />}
-      
-      <div className="container relative z-10" ref={parallaxRef}>
+      <div className="container relative" ref={parallaxRef}>
         <div className="relative z-1 max-w-[62rem] mx-auto text-center mb-[3.875rem] md:mb-20 lg:mb-[6.25rem]">
           <div className="flex items-center justify-center mb-6">
             <div className="hidden md:block h-[2px] w-16 bg-gradient-to-r from-purple-500 to-transparent"></div>
@@ -162,7 +155,7 @@ const Hero = () => {
                 <div className="aspect-[33/40] rounded-b-[0.9rem] overflow-hidden md:aspect-[688/490] lg:aspect-[1024/490]">
                   <img
                     src={background}
-                    className="w-full h-full object-cover"
+                    className="full-height-image w-full scale-[1.7] translate-y-[12%] md:scale-[1] md:-translate-y-[10%] lg:-translate-y-[23%]"
                     width={1024}
                     height={490}
                     alt="AI"
@@ -190,6 +183,10 @@ const Hero = () => {
               </Link>
             </div>
             <Gradient />
+          </div>
+          
+          <div className="absolute -top-[90%] left-1/2 w-[234%] -translate-x-1/2 md:-top-[90%] md:w-[138%] lg:-top-[90%]">
+            {theme === "dark" ? <DarkModeBackground /> : <LightModeBackground />}
           </div>
         </div>
       </div>

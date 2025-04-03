@@ -7,6 +7,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.bg-n-8 {
+  background-color: #121212 !important; /* Replace with your actual color */
+}
+
 
 :root {
   --font-sora: "Sora", sans-serif;

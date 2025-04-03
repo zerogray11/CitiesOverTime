@@ -55,7 +55,7 @@ const Header = () => {
   }
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 border-b border-n-6 bg-n-8/90 backdrop-blur-sm">
+    <header className="fixed top-0 left-0 w-full z-50 border-b border-n-6 bg-n-8/90 ">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
@@ -150,88 +150,41 @@ const Header = () => {
 
       {/* Mobile Navigation Menu */}
       {openNavigation && (
-        <div className="fixed inset-0 z-40 bg-n-8/95 backdrop-blur-md lg:hidden">
+        <div className="fixed inset-0 z-40 bg-n-8/95  lg:hidden flex items-center justify-center">
           <div 
             ref={menuRef}
-            className="absolute top-0 right-0 w-full sm:w-80 h-full bg-n-8 border-l border-n-6 shadow-2xl transform transition-transform duration-300 ease-in-out"
+            className="absolute top-0 right-0 w-full sm:w-80 h-full bg-n-8 border-l border-n-6 shadow-2xl flex flex-col items-center pt-6"
             style={{ maxWidth: "100%" }}
           >
-            <div className="p-6">
-              {/* Close button (same as hamburger icon) */}
-              <div className="flex justify-end">
-                <button
+            {/* Logo inside the mobile menu */}
+            <Link to="/" onClick={closeNavigation} className="mb-6">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-color-5 to-color-3 flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0 rounded-full border-2 border-n-1"></div>
+                <div className="w-2 h-2 rounded-full bg-n-1"></div>
+              </div>
+            </Link>
+
+            {/* Close Button */}
+            <button
+              onClick={closeNavigation}
+              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-n-7 hover:bg-n-6 transition-colors"
+              aria-label="Close menu"
+            >
+              <MenuSvg openNavigation={true} />
+            </button>
+
+            {/* Navigation Links */}
+            <div className="mt-8 flex flex-col space-y-6 w-full px-6">
+              {navigation.map((item) => (
+                <Link
+                  key={item.id}
+                  to={item.url}
                   onClick={closeNavigation}
-                  className="flex items-center justify-center w-10 h-10 rounded-full bg-n-7 hover:bg-n-6 transition-colors"
-                  aria-label="Close menu"
+                  className="font-code text-lg uppercase py-3 px-4 rounded-lg transition-colors text-center text-n-1/50 hover:bg-n-7 hover:text-n-1"
                 >
-                  <MenuSvg openNavigation={true} />
-                </button>
-              </div>
-
-              <div className="mt-8 flex flex-col space-y-6">
-                {navigation.map((item) => (
-                  <Link
-                    key={item.id}
-                    to={item.url}
-                    onClick={closeNavigation}
-                    className={`font-code text-lg uppercase py-3 px-4 rounded-lg transition-colors ${
-                      pathname.pathname === item.url 
-                        ? "bg-n-7 text-n-1" 
-                        : "text-n-1/50 hover:bg-n-7 hover:text-n-1"
-                    }`}
-                  >
-                    {item.title}
-                  </Link>
-                ))}
-
-                <button
-                  onClick={() => {
-                    toggleTheme();
-                    closeNavigation();
-                  }}
-                  className="font-code text-lg uppercase py-3 px-4 rounded-lg bg-n-7 text-n-1 hover:bg-n-6 transition-colors flex items-center justify-center space-x-2"
-                >
-                  <span>{theme === "dark" ? "🌙" : "☀️"}</span>
-                  <span>Theme</span>
-                </button>
-
-                {user ? (
-                  <Link
-                    to={role === "admin" ? "/admin-dashboard" : "/user-profile"}
-                    onClick={closeNavigation}
-                    className="font-code text-lg uppercase py-3 px-4 rounded-lg bg-n-7 text-n-1 hover:bg-n-6 transition-colors flex items-center justify-center space-x-2"
-                  >
-                    {role === "admin" ? (
-                      <>
-                        <Shield size={20} />
-                        <span>Dashboard</span>
-                      </>
-                    ) : (
-                      <>
-                        <User size={20} />
-                        <span>Profile</span>
-                      </>
-                    )}
-                  </Link>
-                ) : (
-                  <>
-                    <Link
-                      to="/sign-up-page"
-                      onClick={closeNavigation}
-                      className="font-code text-lg uppercase py-3 px-4 rounded-lg text-n-1/50 hover:bg-n-7 hover:text-n-1 transition-colors text-center"
-                    >
-                      New Account
-                    </Link>
-                    <Button
-                      to="/sign-in-page"
-                      onClick={closeNavigation}
-                      className="w-full py-3 text-center"
-                    >
-                      Sign In
-                    </Button>
-                  </>
-                )}
-              </div>
+                  {item.title}
+                </Link>
+              ))}
             </div>
           </div>
         </div>
